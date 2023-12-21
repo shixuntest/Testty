@@ -45,7 +45,7 @@
     </div>
     <button id="capture-btn">Capture</button>
     <button id="screenShot-btn">jietu</button>
-    <img id="img" src="./img/back.jpg">
+    <img id="img">
 
     <script>
         const video = document.querySelector("#my-video");
@@ -115,6 +115,7 @@
             // base64Info = canvas.toDataURL();
             // let base64Info = getImageBase64Data(startX,startY,endX,endY);
             console.log(base64Info);
+            console.log(base64Info.length);
 
             canvas.removeEventListener('mousemove',handleCanvasMouseMove,false);
             canvas.removeEventListener('mouseup',handleCanvasMouseUp,false);
