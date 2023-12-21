@@ -44,16 +44,18 @@
         <canvas id="canvas"></canvas>
     </div>
     <button id="capture-btn">Capture</button>
-    <button id="jietu-btn">jietu</button>
+    <button id="screenShot-btn">jietu</button>
     <img id="img" src="./img/back.jpg">
 
     <script>
         const video = document.querySelector("#my-video");
         const captureBtn = document.querySelector("#capture-btn");
         const canvas = document.querySelector("#canvas");
-        const getImageBtn = document.querySelector("#jietu-btn");
+        const getImageBtn = document.querySelector("#screenShot-btn");
         const ctx = canvas.getContext('2d');
         const img = document.querySelector("#img");
+
+        let startX,startY,endX,endY;
 
         captureBtn.addEventListener('click', () => {
             captureFrame();
@@ -80,16 +82,17 @@
         canvas.addEventListener('mousedown',handleCanvasMouseDown,false);
 
         function handleCanvasMouseDown(e){
-            initPoint = [1.5*e.offsetX , 1.5*e.offsetY];
+            startX = 1.5*e.offsetX;
+            startY = 1.5*e.offsetY;
 
             canvas.addEventListener('mousemove',handleCanvasMouseMove,false);
             canvas.addEventListener('mouseup',handleCanvasMouseUp,false);
         }
 
         function handleCanvasMouseMove(e){
-            const endX = 1.5*e.offsetX;
-            const endY = 1.5*e.offsetY;
-            const[startX , startY] = initPoint;
+            endX = 1.5*e.offsetX;
+            endY = 1.5*e.offsetY;
+
             const rectWidth = endX - startX;
             const rectHeight = endY - startY;
             const { width , height} = canvas;
@@ -100,11 +103,16 @@
         }
 
         function handleCanvasMouseUp(e){
-            const[startX , startY] = initPoint;
-            const endX = 1.5*e.offsetX;
-            const endY = 1.5*e.offsetY;
 
-            let base64Info = canvas.toDataURL();
+            const screenShotData = ctx.getImageData(startX,startY,endX,endY)
+
+            const newCanvas = document.createElement('canvas');
+            newCanvas.width = screenShotData.width;
+            newCanvas.height = screenShotData.height;
+            const newCtx = newCanvas.getContext('2d');
+            newCtx.putImageData(screenShotData,0,0);
+            let base64Info = newCtx.toDataURL();
+            base64Info = canvas.toDataURL();
             // let base64Info = getImageBase64Data(startX,startY,endX,endY);
             console.log(base64Info);
 
