@@ -128,7 +128,7 @@
         function drawScreenShot(canWidth,canHeight,rectWidth,rectHeight){
             ctx.globalCompositeOperation = 'destination-out';
             ctx.fillStyle = "#000"
-            ctx.fillRect(...initPoint,rectWidth,rectHeight);
+            ctx.fillRect(startX,startY,rectWidth,rectHeight);
 
             ctx.globalCompositeOperation = 'destination-over';
             ctx.drawImage(video, 0, 0, canWidth, canHeight);
