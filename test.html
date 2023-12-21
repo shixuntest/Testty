@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Video Frame</title>
+    <style>
+        body {
+            background-color: aqua;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0px;
+            padding-top: 10px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        video {
+            width: 1000px;
+            max-height: 100%;
+
+        }
+
+        #capture-btn {
+            display: block;
+            margin-top: 20px;
+            font-size: 20px;
+            padding: 10px 20px;
+        }
+
+        #canvas {
+            background-color: antiquewhite;
+            position: relative;
+            width: 1000px;
+            max-height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <video id="my-video" src="movi.mp4" controls></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <button id="capture-btn">Capture</button>
+    <button id="jietu-btn">jietu</button>
+
+    <script src="./dist/screenShotPlugin.umd.js"></script>
+    <script>
+        const video = document.querySelector("#my-video");
+        const captureBtn = document.querySelector("#capture-btn");
+        const canvas = document.querySelector("#canvas");
+        const jietubtn = document.querySelector("#jietu-btn")
+        const ctx = canvas.getContext("2d");
+
+        captureBtn.addEventListener('click', () => {
+            captureFrame();
+        });
+
+        jietubtn.addEventListener('click', () => {
+            ccc();
+        });
+
+        function captureFrame() {
+            console.log("-----------------");
+            video.pause();
+
+            const videoWidth = video.videoWidth;
+            const videoHeight = video.videoHeight;
+
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, videoWidth, videoHeight);
+            drawImageMask(0,0,videoWidth,videoHeight);
+        }
+
+
+        function aaa() {
+
+            const callback = ({ base64, cutInfo }) => {
+                console.log(base64, cutInfo);
+            }
+            // 截图取消时的回调函数
+            const closeFn = () => {
+                console.log("截图窗口关闭");
+            }
+            new screenShotPlugin({ enableWebRtc: true, completeCallback: callback, closeCallback: closeFn ,canvasWidth: document.body.offsetWidth,canvasHeight: document.body.offsetHeight
+            ,showScreenData: true,wrcWindowMode: true});
+        }
+
+
+
+        function bbb() {
+            let flag = false;
+            let startPoint = { x: undefined, y: undefined }
+            const canvas = document.querySelector("#canvas");
+            const ctx = canvas.getContext("2d");
+
+            canvas.onmousedown = (e) => {
+                let x = e.offsetX;
+                let y = e.offsetY;
+                startPoint = { x: x, y: y };
+                flag = true;
+                console.log("开始画画");
+            }
+
+            canvas.onmousemove = (e) => {
+                let x = e.offsetX;
+                let y = e.offsetY;
+                let newPoint = { x: x, y: y };
+                if (flag) {
+                    drawFrame(startPoint.x, startPoint.y, newPoint.x, newPoint.y)
+                }
+            }
+
+            canvas.onmouseup = () => {
+                flag = false;
+            };
+
+            function drawFrame(xStart, yStart, xNew, yNew) {
+
+            }
+        }
+
+
+        function ccc () {
+
+        }
+
+        function drawImageMask(x,y,width,height) {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(0,0,width,height);
+            console.log("wozhixingle");
+        }
+    </script>
+</body>
+
+</html>

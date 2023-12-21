@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Video Frame</title>
+    <style>
+        body {
+            background-color: aqua;
+            height: 100vh;
+            margin: 100px;
+            padding-top: 10px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        video {
+            width: 1280px;
+            max-height: 720px;
+        }
+
+        #capture-btn {
+            display: block;
+            margin-top: 20px;
+            font-size: 20px;
+            padding: 10px 20px;
+        }
+
+        #canvas {
+            background-color: antiquewhite;
+            position: relative;
+            width: 1280px;
+            max-height: 720px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <video id="my-video" src="movi.mp4" controls></video>
+        <canvas id="canvas"></canvas>
+    </div>
+    <button id="capture-btn">Capture</button>
+    <button id="jietu-btn">jietu</button>
+    <img id="img" src="back.jpg">
+
+    <script>
+        const video = document.querySelector("#my-video");
+        const captureBtn = document.querySelector("#capture-btn");
+        const canvas = document.querySelector("#canvas");
+        const getImageBtn = document.querySelector("#jietu-btn");
+        const ctx = canvas.getContext('2d');
+        const img = document.querySelector("#img");
+
+        captureBtn.addEventListener('click', () => {
+            captureFrame();
+        });
+        getImageBtn.addEventListener('click', () => {
+            getImage();
+        });
+        
+
+        function captureFrame() {
+            console.log("-----------------");
+            video.pause();
+
+            const videoWidth = video.videoWidth;
+            const videoHeight = video.videoHeight;
+
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+   
+            ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+            drawImageMask(0,0,videoWidth,videoHeight);
+        }
+
+        canvas.addEventListener('mousedown',handleCanvasMouseDown,false);
+
+        function handleCanvasMouseDown(e){
+            initPoint = [1.5*e.offsetX , 1.5*e.offsetY];
+
+            canvas.addEventListener('mousemove',handleCanvasMouseMove,false);
+            canvas.addEventListener('mouseup',handleCanvasMouseUp,false);
+        }
+
+        function handleCanvasMouseMove(e){
+            const endX = 1.5*e.offsetX;
+            const endY = 1.5*e.offsetY;
+            const[startX , startY] = initPoint;
+            const rectWidth = endX - startX;
+            const rectHeight = endY - startY;
+            const { width , height} = canvas;
+            console.log(width,height);
+            ctx.clearRect(0,0,width,height);
+            drawImageMask(0,0,width,height);
+            drawScreenShot(width,height,rectWidth,rectHeight);
+        }
+
+        function handleCanvasMouseUp(e){
+            const[startX , startY] = initPoint;
+            const endX = 1.5*e.offsetX;
+            const endY = 1.5*e.offsetY;
+
+            let base64Info = canvas.toDataURL();
+            // let base64Info = getImageBase64Data(startX,startY,endX,endY);
+            console.log(base64Info);
+
+            canvas.removeEventListener('mousemove',handleCanvasMouseMove,false);
+            canvas.removeEventListener('mouseup',handleCanvasMouseUp,false);
+        }
+
+        function drawImageMask(x,y,width,height) {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(0,0,width,height);
+        }
+
+        function drawScreenShot(canWidth,canHeight,rectWidth,rectHeight){
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = "#000"
+            ctx.fillRect(...initPoint,rectWidth,rectHeight);
+
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.drawImage(video, 0, 0, canWidth, canHeight);
+        }
+
+
+    </script>
+</body>
+
+</html>
